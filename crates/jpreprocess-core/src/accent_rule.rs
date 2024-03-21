@@ -20,7 +20,7 @@ pub enum AccentRuleParseError {
 }
 
 static PARSE_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new("^((?P<pos>名詞|形容詞|助詞|特殊助動詞|動詞)%)?(?P<accent>[FC][1-5]|P1|P2|P6|P14)?(@(?P<add>[-0-9]+))?$")
+    Regex::new("^((?P<pos>名詞|助動詞|接頭辞|形容詞|助詞|特殊助動詞|動詞)%)?(?P<accent>[FC][1-6]|P1|P2|P4|P6|P13|P14)?(@(?P<add>[-0-9]+))?$")
         .expect("Failed to compile accent rule regex")
 });
 
@@ -31,7 +31,7 @@ pub enum AccentType {
     F3,
     F4,
     F5,
-    //F6,
+    F6,
     C1,
     C2,
     C3,
@@ -39,9 +39,9 @@ pub enum AccentType {
     C5,
     P1,
     P2,
-    //P4,
+    P4,
     P6,
-    //P13,
+    P13,
     P14,
     None,
 }
@@ -55,6 +55,7 @@ impl FromStr for AccentType {
             "F3" => Ok(Self::F3),
             "F4" => Ok(Self::F4),
             "F5" => Ok(Self::F5),
+            "F6" => Ok(Self::F6),
             "C1" => Ok(Self::C1),
             "C2" => Ok(Self::C2),
             "C3" => Ok(Self::C3),
@@ -62,7 +63,9 @@ impl FromStr for AccentType {
             "C5" => Ok(Self::C5),
             "P1" => Ok(Self::P1),
             "P2" => Ok(Self::P2),
+            "P4" => Ok(Self::P4),
             "P6" => Ok(Self::P6),
+            "P13" => Ok(Self::P13),
             "P14" => Ok(Self::P14),
             "" | "*" => Ok(Self::None),
             _ => Err(()),
@@ -78,6 +81,7 @@ impl Display for AccentType {
             Self::F3 => "F3",
             Self::F4 => "F4",
             Self::F5 => "F5",
+            Self::F6 => "F6",
             Self::C1 => "C1",
             Self::C2 => "C2",
             Self::C3 => "C3",
@@ -85,7 +89,9 @@ impl Display for AccentType {
             Self::C5 => "C5",
             Self::P1 => "P1",
             Self::P2 => "P2",
+            Self::P4 => "P4",
             Self::P6 => "P6",
+            Self::P13 => "P13",
             Self::P14 => "P14",
             Self::None => "*",
         })
@@ -125,6 +131,8 @@ pub enum POSMatch {
     Joshi,
     Keiyoushi,
     Meishi,
+    Settouzi,
+    Jodoushi,
 }
 
 impl FromStr for POSMatch {
@@ -135,6 +143,9 @@ impl FromStr for POSMatch {
             "助詞" => Ok(Self::Joshi),
             "形容詞" => Ok(Self::Keiyoushi),
             "名詞" => Ok(Self::Meishi),
+            "接頭辞" => Ok(Self::Settouzi),
+            "助動詞" => Ok(Self::Jodoushi),
+
             _ => Err(AccentRuleParseError::UnknownPOS(s.to_string())),
         }
     }
@@ -147,6 +158,8 @@ pub struct ChainRules {
     pub joshi: Option<ChainRule>,
     pub keiyoushi: Option<ChainRule>,
     pub meishi: Option<ChainRule>,
+    pub settouzi: Option<ChainRule>,
+    pub jodoushi: Option<ChainRule>,
 }
 
 impl ChainRules {
@@ -159,6 +172,8 @@ impl ChainRules {
         for rule in rules.split('/') {
             if result.push_rule(rule).is_err() {
                 eprintln!("WARN: accent rule parsing has failed in {}. Skipped.", rule);
+
+
             }
         }
         result
@@ -171,6 +186,8 @@ impl ChainRules {
             POSMatch::Joshi => self.joshi.replace(rule),
             POSMatch::Keiyoushi => self.keiyoushi.replace(rule),
             POSMatch::Meishi => self.meishi.replace(rule),
+            POSMatch::Settouzi => self.settouzi.replace(rule),
+            POSMatch::Jodoushi => self.jodoushi.replace(rule),
             POSMatch::Default => self.default.replace(rule),
         };
         Ok(())
@@ -210,6 +227,8 @@ impl ChainRules {
             POS::Joshi(_) => self.joshi.as_ref(),
             POS::Keiyoushi(_) => self.keiyoushi.as_ref(),
             POS::Meishi(_) => self.meishi.as_ref(),
+            POS::Settouzi => self.settouzi.as_ref(),
+            POS::Jodoushi => self.jodoushi.as_ref(),
             _ => None,
         };
         rule.or(self.default.as_ref())
@@ -221,6 +240,8 @@ impl ChainRules {
         self.joshi = None;
         self.keiyoushi = None;
         self.meishi = None;
+        self.settouzi = None;
+        self.jodoushi = None;
     }
 }
 
@@ -232,6 +253,8 @@ impl Display for ChainRules {
             ("助詞", &self.joshi),
             ("形容詞", &self.keiyoushi),
             ("名詞", &self.meishi),
+            ("接頭辞", &self.settouzi),
+            ("助動詞", &self.jodoushi),
         ]
         .iter()
         .filter(|(_name, chainrule_option)| chainrule_option.is_some())
@@ -269,6 +292,16 @@ mod tests {
     }
 
     #[test]
+    fn simple_rule_2() {
+        let rules = ChainRules::new("F6");
+        let rule = rules.get_rule(&POS::Others).unwrap();
+        assert_eq!(rule.accent_type, AccentType::F6);
+        assert_eq!(rule.add_type, 0);
+
+        assert_eq!(rules.to_string(), "F6");
+    }
+
+    #[test]
     fn single_complex_rule() {
         let rules = ChainRules::new("形容詞%F2@-1");
         let rule = rules.get_rule(&POS::Keiyoushi(Keiyoushi::Jiritsu)).unwrap();
@@ -280,15 +313,15 @@ mod tests {
 
     #[test]
     fn multiple_complex_rule() {
-        let rules = ChainRules::new("形容詞%F2@0/動詞%F5");
+        let rules = ChainRules::new("動詞%F2@-1/形容詞%F2@-1");
         let rule1 = rules.get_rule(&POS::Keiyoushi(Keiyoushi::Jiritsu)).unwrap();
         assert_eq!(rule1.accent_type, AccentType::F2);
-        assert_eq!(rule1.add_type, 0);
+        assert_eq!(rule1.add_type, -1);
         let rule2 = rules.get_rule(&POS::Doushi(Doushi::Jiritsu)).unwrap();
-        assert_eq!(rule2.accent_type, AccentType::F5);
-        assert_eq!(rule2.add_type, 0);
+        assert_eq!(rule2.accent_type, AccentType::F2);
+        assert_eq!(rule2.add_type, -1);
 
-        assert_eq!(rules.to_string(), "動詞%F5/形容詞%F2");
+        assert_eq!(rules.to_string(), "動詞%F2@-1/形容詞%F2@-1");
     }
 
     #[test]
@@ -335,3 +368,4 @@ mod tests {
         assert_eq!(rules.to_string(), "*");
     }
 }
+

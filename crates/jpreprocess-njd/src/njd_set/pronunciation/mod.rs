@@ -20,8 +20,7 @@ pub fn njd_set_pronunciation(njd: &mut NJD) {
 
             /* if filler, overwrite pos */
             if mora_size != 0 {
-                *node.get_pos_mut() = POS::Filler;
-            }
+                *node.get_pos_mut() = POS::Kandoushi(Kandoushi::Filler)            }
 
             if pron.is_touten() {
                 node.get_pos_mut().convert_to_kigou();
@@ -50,7 +49,7 @@ pub fn njd_set_pronunciation(njd: &mut NJD) {
                 let node = b.get_mut(0).unwrap();
                 (head_of_kana_filler_sequence, node)
             };
-            if matches!(node.get_pos(), POS::Filler) {
+            if matches!(node.get_pos(), POS::Kandoushi(Kandoushi::Filler)) {
                 if Pronunciation::is_mora_convertable(node.get_string()) {
                     if let Some(seq) = head_of_kana_filler_sequence {
                         seq.transfer_from(node);

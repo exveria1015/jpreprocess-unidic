@@ -73,7 +73,7 @@ pub fn njd_set_unvoiced_vowel(njd: &mut NJD) {
                 && state_next.node_index != state_nextnext.node_index;
             let pos_ok = matches!(
                 state_next.pos,
-                POS::Doushi(_) | POS::Jodoushi | POS::Kandoushi
+                POS::Doushi(_) | POS::Jodoushi | POS::Kandoushi(_)
             );
             let mora_ok = matches!(
                 (state_curr.mora.mora_enum, state_next.mora.mora_enum),
@@ -121,7 +121,7 @@ pub fn njd_set_unvoiced_vowel(njd: &mut NJD) {
         if state_curr.is_voiced_flag.is_none() {
             state_curr.is_voiced_flag = if
             /* rule 0 */
-            matches!(state_curr.pos, POS::Filler)  ||
+            matches!(state_curr.pos, POS::Kandoushi(Kandoushi::Filler))  ||
                 /* rule 3 */
                 matches!(
                     state_next.as_ref().and_then(|n| n.is_voiced_flag),

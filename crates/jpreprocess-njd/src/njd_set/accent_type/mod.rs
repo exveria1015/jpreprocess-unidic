@@ -99,9 +99,12 @@ fn calc_top_node_acc(
     match rule.accent_type {
         AccentType::F1 => top_node_acc,
         AccentType::F2 if top_node_acc == 0 => add_rule(),
+        AccentType::F2 => top_node_acc,
         AccentType::F3 if top_node_acc != 0 => add_rule(),
         AccentType::F4 => add_rule(),
         AccentType::F5 => 0,
+        AccentType::F6 if top_node_acc == 0 => add_rule(),
+        AccentType::F6 => mora_size + node_acc,
         AccentType::C1 => mora_size + node_acc,
         AccentType::C2 => mora_size + 1,
         AccentType::C3 => mora_size,
@@ -111,8 +114,11 @@ fn calc_top_node_acc(
         AccentType::P1 => mora_size + node_acc,
         AccentType::P2 if top_node_acc == 0 => 0,
         AccentType::P2 => mora_size + node_acc,
+        AccentType::P4 if top_node_acc == 0 => 0,
         AccentType::P6 => 0,
-        AccentType::P14 if top_node_acc != 0 => mora_size + node_acc,
+        AccentType::P13 => top_node_acc,
+        AccentType::P14 if top_node_acc == 0 => top_node_acc,
+        AccentType::P14 => top_node_acc,
         _ => top_node_acc,
     }
 }

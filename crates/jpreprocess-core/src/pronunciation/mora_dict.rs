@@ -6,7 +6,8 @@ use once_cell::sync::Lazy;
 use super::mora_enum::MoraEnum;
 
 pub static MORA_STR_LIST: Lazy<Vec<&str>> = Lazy::new(|| {
-    let mut result = Vec::with_capacity(1 + 158 + 158 + 52 + 4);
+    let mut result = Vec::with_capacity(1 + 158 + 158 + 52 + 6);
+
     result.push("ー");
     result.extend(MORA_KATAKANA.iter().map(|(from, _to)| from));
     result.extend(MORA_HIRAGANA.iter().map(|(from, _to)| from));
@@ -28,7 +29,7 @@ pub fn get_mora_enum(position: usize) -> Vec<MoraEnum> {
         1..=158 => vec![MORA_KATAKANA[position - 1].1],
         159..=316 => vec![MORA_HIRAGANA[position - 159].1],
         317..=368 => MORA_ALPHABET[position - 317].1.to_vec(),
-        369..=372 => vec![MORA_IRREGULAR_KATAKANA[position - 369].1],
+        369..=374 => vec![MORA_IRREGULAR_KATAKANA[position - 369].1],
         _ => unreachable!(),
     }
 }
@@ -439,11 +440,14 @@ const MORA_ALPHABET: [(&str, &[MoraEnum]); 52] = [
     ("Ａ", &[MoraEnum::E, MoraEnum::Long]),   // エー 2
 ];
 
-const MORA_IRREGULAR_KATAKANA: [(&str, MoraEnum); 4] = [
+const MORA_IRREGULAR_KATAKANA: [(&str, MoraEnum); 6] = [
     ("グヮ", MoraEnum::Gwa),
     ("クヮ", MoraEnum::Kwa),
     ("ヮ", MoraEnum::Xwa),
     ("ヶ", MoraEnum::Xke),
+    ("ヷ", MoraEnum::Wva),
+    ("ヺ", MoraEnum::Wvo),
+
 ];
 
 #[cfg(test)]
@@ -457,6 +461,7 @@ mod tests {
         let found = MORA_STR_LIST.iter().position(|l| *l == "ー").unwrap();
         assert_eq!(get_mora_enum(found).as_slice(), [MoraEnum::Long]);
     }
+
     #[test]
     fn katakana() {
         let found = MORA_STR_LIST.iter().position(|l| *l == "ヴョ").unwrap();
@@ -485,4 +490,17 @@ mod tests {
         let found = MORA_STR_LIST.iter().position(|l| *l == "ヶ").unwrap();
         assert_eq!(get_mora_enum(found).as_slice(), [MoraEnum::Xke]);
     }
+
+    #[test]
+    fn katakana_irregular3() {
+        let found = MORA_STR_LIST.iter().position(|l| *l == "ヷ").unwrap();
+        assert_eq!(get_mora_enum(found).as_slice(), [MoraEnum::Wva]);
+    }
+
+    #[test]
+    fn katakana_irregular4() {
+        let found = MORA_STR_LIST.iter().position(|l| *l == "ヺ").unwrap();
+        assert_eq!(get_mora_enum(found).as_slice(), [MoraEnum::Wvo]);
+    }
+
 }

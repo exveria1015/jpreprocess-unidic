@@ -120,13 +120,15 @@ mod tests {
         assert_eq!(string, "．");
         assert!(matches!(
             details.pos,
-            POS::Meishi(Meishi::Setsubi(Setsubi::Josuushi))
+            //POS::Setsubiji(Setsubi::Josuushi(Josuushi::Jousuushi))
+            POS::Setsubizi(Setsubizi::Meishiteki(Meishiteki::Josuushi))
         ));
         assert_eq!(details.ctype, CType::None);
         assert_eq!(details.cform, CForm::None);
         assert_eq!(details.read.as_ref().unwrap(), "テン");
         assert_eq!(details.pron, pron!([Te, N], 0));
-        assert_eq!(details.chain_rule.get_rule(&POS::Filler), None);
+        //assert_eq!(details.chain_rule.get_rule(&POS::Filler), None);
+        assert_eq!(details.chain_rule.get_rule(&POS::Kandoushi(Kandoushi::Filler)), None);
         assert_eq!(details.chain_flag, None);
 
         let v = entry.to_str_vec(input[0].to_owned());
@@ -135,7 +137,8 @@ mod tests {
 
     #[test]
     fn load_multiple_nodes() {
-        let input: Vec<&str> = "あーあ,感動詞,*,*,*,*,*,あー:あ,アー:ア,アー:ア,1/2:1/1,C1,"
+        //let input: Vec<&str> = "あーあ,感動詞,*,*,*,*,*あー,:あ,アー:ア,アー:ア,1/2:1/1,C1,"
+        let input: Vec<&str> = "あーあ,感動詞,一般,*,*,*,*,あーあ,アーア,アーア,1/2:1/1/1,C1,"
             .split(',')
             .collect();
         let entry = WordEntry::load(&input[1..]).unwrap();

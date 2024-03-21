@@ -4,7 +4,7 @@ use super::{
     mora_dict::INTO_STR,
     mora_enum::MoraEnum,
     phoneme::{mora_to_phoneme, Consonant, Vowel},
-    QUESTION, QUOTATION, TOUTEN,
+    QUESTION, QUOTATION, TOUTEN,MIDLEDOT,
 };
 
 use serde::{Deserialize, Serialize};
@@ -84,6 +84,7 @@ impl Display for Mora {
         let mora = match self.mora_enum {
             MoraEnum::Question => QUESTION,
             MoraEnum::Touten => TOUTEN,
+            MoraEnum::MiddleDot => MIDLEDOT,
             mora_enum => INTO_STR.get(&mora_enum).unwrap(),
         };
         let suffix = if self.is_voiced { "" } else { QUOTATION };

@@ -321,6 +321,7 @@ pub enum MoraEnum {
     /// ー
     Long,
 
+
     // Irregurar Katakana
     /// グヮ
     Gwa,
@@ -330,10 +331,17 @@ pub enum MoraEnum {
     Xwa,
     /// ヶ
     Xke,
+    /// ヷ
+    Wva,
+    /// ヺ
+    Wvo,
+
 
     // Special
     /// 、
     Touten,
     /// ？
     Question,
+    /// ・
+    MiddleDot,
 }

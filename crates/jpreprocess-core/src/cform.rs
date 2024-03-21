@@ -61,6 +61,80 @@ pub enum CForm {
     /// 連用形
     Renyou,
 
+    ///UniDic
+    /// ク語法
+    Kugohou,
+    /// 仮定形-一般
+    KateikeiGeneral,
+    /// 仮定形-融合
+    KateikeiFusion,
+    /// 命令形
+    Meireikei,
+    /// 已然形-一般
+    IzenkeiGeneral,
+    /// 已然形-補助
+    IzenkeiHojo,
+    /// 意志推量形
+    Ishisuiryoukei,
+    /// 未然形-サ
+    MizenkeiSa,
+    /// 未然形-セ
+    MizenkeiSe,
+    /// 未然形-一般
+    MizenkeiGeneral,
+    /// 未然形-撥音便
+    MizenkeiHatsuonbin,
+    /// 未然形-補助
+    MizenkeiHojo,
+    /// 終止形-一般
+    ShuushikeiGeneral,
+    /// 終止形-促音便
+    ShuushikeiSokuonbin,
+    /// 終止形-撥音便
+    ShuushikeiHatsuonbin,
+    /// 終止形-融合
+    ShuushikeiFusion,
+    /// 終止形-補助
+    ShuushikeiHojo,
+    /// 語幹-サ
+    GokanSa,
+    /// 語幹-一般
+    GokanGeneral,
+    /// 連体形-イ音便
+    RentaikeiIonbin,
+    /// 連体形-ウ音便
+    RentaikeiUonbin,
+    /// 連体形-一般
+    RentaikeiGeneral,
+    /// 連体形-促音便
+    RentaikeiSokuonbin,
+    /// 連体形-撥音便
+    RentaikeiHatsuonbin,
+    /// 連体形-省略
+    RentaikeiShouryaku,
+    /// 連体形-補助
+    RentaikeiHojo,
+    /// 連用形-イ音便
+    RenyoukeiIonbin,
+    /// 連用形-ウ音便
+    RenyoukeiUonbin,
+    /// 連用形-ト
+    RenyoukeiTo,
+    /// 連用形-ニ
+    RenyoukeiNi,
+    /// 連用形-一般
+    RenyoukeiGeneral,
+    /// 連用形-促音便
+    RenyoukeiSokuonbin,
+    /// 連用形-撥音便
+    RenyoukeiHatsuonbin,
+    /// 連用形-省略
+    RenyoukeiShouryaku,
+    /// 連用形-融合
+    RenyoukeiFusion,
+    /// 連用形-補助
+    RenyoukeiHojo,
+
     /// \*
     #[default]
     None,
@@ -112,6 +186,43 @@ impl FromStr for CForm {
             "連用ニ接続" => Ok(Self::RenyouConjunctionNi),
             "連用形" => Ok(Self::Renyou),
 
+            //UniDic
+            "ク語法" => Ok(Self::Kugohou),
+            "仮定形-一般" => Ok(Self::KateikeiGeneral),
+            "仮定形-融合" => Ok(Self::KateikeiFusion),
+            "命令形" => Ok(Self::Meireikei),
+            "已然形-一般" => Ok(Self::IzenkeiGeneral),
+            "已然形-補助" => Ok(Self::IzenkeiHojo),
+            "意志推量形" => Ok(Self::Ishisuiryoukei),
+            "未然形-サ" => Ok(Self::MizenkeiSa),
+            "未然形-セ" => Ok(Self::MizenkeiSe),
+            "未然形-一般" => Ok(Self::MizenkeiGeneral),
+            "未然形-撥音便" => Ok(Self::MizenkeiHatsuonbin),
+            "未然形-補助" => Ok(Self::MizenkeiHojo),
+            "終止形-一般" => Ok(Self::ShuushikeiGeneral),
+            "終止形-促音便" => Ok(Self::ShuushikeiSokuonbin),
+            "終止形-撥音便" => Ok(Self::ShuushikeiHatsuonbin),
+            "終止形-融合" => Ok(Self::ShuushikeiFusion),
+            "終止形-補助" => Ok(Self::ShuushikeiHojo),
+            "語幹-サ" => Ok(Self::GokanSa),
+            "語幹-一般" => Ok(Self::GokanGeneral),
+            "連体形-イ音便" => Ok(Self::RentaikeiIonbin),
+            "連体形-ウ音便" => Ok(Self::RentaikeiUonbin),
+            "連体形-一般" => Ok(Self::RentaikeiGeneral),
+            "連体形-促音便" => Ok(Self::RentaikeiSokuonbin),
+            "連体形-撥音便" => Ok(Self::RentaikeiHatsuonbin),
+            "連体形-省略" => Ok(Self::RentaikeiShouryaku),
+            "連体形-補助" => Ok(Self::RentaikeiHojo),
+            "連用形-イ音便" => Ok(Self::RenyoukeiIonbin),
+            "連用形-ウ音便" => Ok(Self::RenyoukeiUonbin),
+            "連用形-ト" => Ok(Self::RenyoukeiTo),
+            "連用形-ニ" => Ok(Self::RenyoukeiNi),
+            "連用形-一般" => Ok(Self::RenyoukeiGeneral),
+            "連用形-促音便" => Ok(Self::RenyoukeiSokuonbin),
+            "連用形-撥音便" => Ok(Self::RenyoukeiHatsuonbin),
+            "連用形-省略" => Ok(Self::RenyoukeiShouryaku),
+            "連用形-融合" => Ok(Self::RenyoukeiFusion),
+            "連用形-補助" => Ok(Self::RenyoukeiHojo),
             "*" => Ok(Self::None),
 
             _ => Err(JPreprocessError::CFormParseError),
@@ -149,6 +260,44 @@ impl Display for CForm {
             Self::RenyouConjunctionDe => "連用デ接続",
             Self::RenyouConjunctionNi => "連用ニ接続",
             Self::Renyou => "連用形",
+
+            //UniDic
+            Self::Kugohou => "ク語法",
+            Self::KateikeiGeneral => "仮定形-一般",
+            Self::KateikeiFusion => "仮定形-融合",
+            Self::Meireikei => "命令形",
+            Self::IzenkeiGeneral => "已然形-一般",
+            Self::IzenkeiHojo => "已然形-補助",
+            Self::Ishisuiryoukei => "意志推量形",
+            Self::MizenkeiSa => "未然形-サ",
+            Self::MizenkeiSe => "未然形-セ",
+            Self::MizenkeiGeneral => "未然形-一般",
+            Self::MizenkeiHatsuonbin => "未然形-撥音便",
+            Self::MizenkeiHojo => "未然形-補助",
+            Self::ShuushikeiGeneral => "終止形-一般",
+            Self::ShuushikeiSokuonbin => "終止形-促音便",
+            Self::ShuushikeiHatsuonbin => "終止形-撥音便",
+            Self::ShuushikeiFusion => "終止形-融合",
+            Self::ShuushikeiHojo => "終止形-補助",
+            Self::GokanSa => "語幹-サ",
+            Self::GokanGeneral => "語幹-一般",
+            Self::RentaikeiIonbin => "連体形-イ音便",
+            Self::RentaikeiUonbin => "連体形-ウ音便",
+            Self::RentaikeiGeneral => "連体形-一般",
+            Self::RentaikeiSokuonbin => "連体形-促音便",
+            Self::RentaikeiHatsuonbin => "連体形-撥音便",
+            Self::RentaikeiShouryaku => "連体形-省略",
+            Self::RentaikeiHojo => "連体形-補助",
+            Self::RenyoukeiIonbin => "連用形-イ音便",
+            Self::RenyoukeiUonbin => "連用形-ウ音便",
+            Self::RenyoukeiTo => "連用形-ト",
+            Self::RenyoukeiNi => "連用形-ニ",
+            Self::RenyoukeiGeneral => "連用形-一般",
+            Self::RenyoukeiSokuonbin => "連用形-促音便",
+            Self::RenyoukeiHatsuonbin => "連用形-撥音便",
+            Self::RenyoukeiShouryaku => "連用形-省略",
+            Self::RenyoukeiFusion => "連用形-融合",
+            Self::RenyoukeiHojo => "連用形-補助",
 
             Self::None => "*",
         })

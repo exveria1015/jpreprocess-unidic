@@ -27,21 +27,31 @@ pub enum Joshi {
     HeiritsuJoshi,
     /// 連体化
     Rentaika,
+
+    /// Unidic 3.1.0
+    ///準体助詞
+    JuntaiJoshi,
+    /// \*
+    None,
+
 }
 
 impl Joshi {
     pub fn from_strs(g1: &str, g2: &str) -> Result<Joshi, POSParseError> {
         match g1 {
             "格助詞" => KakuJoshi::from_str(g2).map(Self::KakuJoshi),
+            "準体助詞" => Ok(Self::JuntaiJoshi),
             "係助詞" => Ok(Self::KakariJoshi),
-            "終助詞" => Ok(Self::ShuJoshi),
+            "副助詞" => Ok(Self::FukuJoshi),
             "接続助詞" => Ok(Self::SetsuzokuJoshi),
+            "終助詞" => Ok(Self::ShuJoshi),
             "特殊" => Ok(Self::Special),
             "副詞化" => Ok(Self::Fukushika),
-            "副助詞" => Ok(Self::FukuJoshi),
             "副助詞／並立助詞／終助詞" => Ok(Self::FukuHeiritsuShuJoshi),
             "並立助詞" => Ok(Self::HeiritsuJoshi),
             "連体化" => Ok(Self::Rentaika),
+            "*" => Ok(Self::None),
+
 
             _ => Err(POSParseError::new(1, g1.to_string(), POSKind::Joshi)),
         }
@@ -57,6 +67,9 @@ pub enum KakuJoshi {
     Quote,
     /// 連語
     Rengo,
+
+    /// \*
+    None,
 }
 
 impl FromStr for KakuJoshi {
@@ -66,6 +79,7 @@ impl FromStr for KakuJoshi {
             "一般" => Ok(Self::General),
             "引用" => Ok(Self::Quote),
             "連語" => Ok(Self::Rengo),
+            "*" => Ok(Self::None),
 
             _ => Err(POSParseError::new(2, s.to_string(), POSKind::KakuJoshi)),
         }
@@ -87,6 +101,9 @@ impl Display for Joshi {
             Self::FukuHeiritsuShuJoshi => "副助詞／並立助詞／終助詞,*,*",
             Self::HeiritsuJoshi => "並立助詞,*,*",
             Self::Rentaika => "連体化,*,*",
+            Self::JuntaiJoshi => "準体助詞,*,*",
+            Self::KakuJoshi(KakuJoshi::None) => "*,*,*",
+            Self::None => "*,*,*",
         })
     }
 }

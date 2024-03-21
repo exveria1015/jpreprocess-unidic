@@ -12,6 +12,7 @@ pub use mora_enum::*;
 pub const TOUTEN: &str = "、";
 pub const QUESTION: &str = "？";
 pub const QUOTATION: &str = "’";
+pub const MIDLEDOT: &str = "・";
 
 #[macro_export]
 macro_rules! pron {
@@ -138,6 +139,10 @@ impl Pronunciation {
         };
         let pronunciation = Self::parse(pron, accent.unwrap_or(0))?;
 
+        if pronunciation.is_empty() {
+            return Ok(pronunciation);
+        }
+
         if let Some(mora_size) = mora_size {
             if pronunciation.mora_size() != mora_size {
                 return Err(PronunciationParseError::MoraSizeMismatch(
@@ -165,6 +170,7 @@ impl Pronunciation {
             }
 
             let quotation = s[match_result.end()..].starts_with(QUOTATION);
+            let midledot = s[match_result.end()..].starts_with(MIDLEDOT);
 
             result.extend(
                 mora_dict::get_mora_enum(match_result.pattern().as_usize())
@@ -179,6 +185,11 @@ impl Pronunciation {
             if quotation {
                 current_position += QUOTATION.len();
             }
+            if midledot {
+                current_position += MIDLEDOT.len();
+            }
+
+
         }
 
         if result.is_empty() {

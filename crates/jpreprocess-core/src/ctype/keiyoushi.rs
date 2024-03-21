@@ -13,12 +13,15 @@ pub enum Keiyoushi {
     I,
     /// イイ
     Ii,
+    /// 形容詞
+    KeiyoushiType,
 }
 
 impl FromStr for Keiyoushi {
     type Err = CTypeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
+            "" => Ok(Self::KeiyoushiType),
             "アウオ段" => Ok(Self::Auo),
             "イ段" => Ok(Self::I),
             "イイ" => Ok(Self::Ii),
@@ -28,8 +31,9 @@ impl FromStr for Keiyoushi {
 }
 
 impl Display for Keiyoushi {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match &self {
+    fn fmt(&self, s: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        s.write_str(match &self {
+            Self::KeiyoushiType => "",
             Self::Auo => "アウオ段",
             Self::I => "イ段",
             Self::Ii => "イイ",

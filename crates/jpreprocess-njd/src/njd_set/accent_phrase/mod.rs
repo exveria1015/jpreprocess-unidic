@@ -53,21 +53,23 @@ fn chain_flag(prev: &NJDNode, node: &NJDNode) -> bool {
             _,
             POS::Keiyoushi(Keiyoushi::Setsubi)
             | POS::Doushi(Doushi::Setsubi)
-            | POS::Meishi(Meishi::Setsubi(_)),
+            //| POS::Meishi(Meishi::Setsubi(_)),
+            | POS::Setsubizi(_)
+
         ) => true,
         /* Rule 17 */
         (POS::Meishi(_), POS::Meishi(Meishi::KoyuMeishi(KoyuMeishi::Person(Person::Mei)))) => false,
         /* Rule 16 */
         (POS::Meishi(Meishi::KoyuMeishi(KoyuMeishi::Person(Person::Sei))), POS::Meishi(_)) => false,
         /* Rule 15 */
-        (_, POS::Settoushi(_)) => false,
+        (_, POS::Settouzi) => false,
         /* Rule 14 */
         (POS::Kigou(_), _) => false,
         (_, POS::Kigou(_)) => false,
         /* Rule 13 */
         (POS::Meishi(_), POS::Doushi(_)) => false,
         (POS::Meishi(_), POS::Keiyoushi(_)) => false,
-        (POS::Meishi(_), POS::Meishi(Meishi::KeiyoudoushiGokan)) => false,
+        //(POS::Meishi(_), POS::Meishi(Meishi::KeiyoudoushiGokan)) => false,
         /* Rule 12 */
         (POS::Doushi(_), POS::Doushi(Doushi::Hijiritsu)) if prev.is_renyou() => true,
         /* Rule 11 */
@@ -82,7 +84,8 @@ fn chain_flag(prev: &NJDNode, node: &NJDNode) -> bool {
         (
             POS::Keiyoushi(Keiyoushi::Setsubi)
             | POS::Doushi(Doushi::Setsubi)
-            | POS::Meishi(Meishi::Setsubi(_)),
+            //| POS::Meishi(Meishi::Setsubi(_)),
+            | POS::Setsubizi(_),
             POS::Meishi(_),
         ) => false,
         /* Rule 08 */
@@ -92,15 +95,18 @@ fn chain_flag(prev: &NJDNode, node: &NJDNode) -> bool {
         /* Rule 08 */
         (_, POS::Jodoushi | POS::Joshi(_)) => true,
         /* Rule 07 */
-        (POS::Meishi(Meishi::FukushiKanou), _) => false,
-        (_, POS::Meishi(Meishi::FukushiKanou)) => false,
+        //(POS::Meishi(Meishi::FukushiKanou), _) => false,
+        //(_, POS::Meishi(Meishi::FukushiKanou)) => false,
+        (POS::Meishi(Meishi::FutsuMeishi(FutsuMeishi::FukushiKanou)), _) => false,
+        (_, POS::Meishi(Meishi::FutsuMeishi(FutsuMeishi::FukushiKanou))) => false,
         /* Rule 06 */
         (POS::Fukushi(_) | POS::Setsuzokushi | POS::Rentaishi, _) => false,
         (_, POS::Fukushi(_) | POS::Setsuzokushi | POS::Rentaishi) => false,
         /* Rule 05 */
         (POS::Doushi(_), POS::Keiyoushi(_) | POS::Meishi(_)) => false,
         /* Rule 04 */
-        (POS::Meishi(Meishi::KeiyoudoushiGokan), POS::Meishi(_)) => false,
+        //(POS::Meishi(Meishi::KeiyoudoushiGokan), POS::Meishi(_)) => false,
+        (POS::Keijoushi(_), POS::Meishi(_)) => false,
         /* Rule 03 */
         (POS::Keiyoushi(_), POS::Meishi(_)) => false,
         /* Rule 02 */

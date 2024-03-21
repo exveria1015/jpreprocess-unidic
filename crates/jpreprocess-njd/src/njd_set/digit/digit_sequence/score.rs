@@ -22,9 +22,11 @@ fn score_start(njd: &NJD, start: usize) -> i8 {
             (node.get_pos(), node.get_string())
         };
         score += match p1_pos {
-            POS::Settoushi(Settoushi::SuuSetsuzoku) => 2,
-            POS::Meishi(Meishi::FukushiKanou) => 1,
-            POS::Meishi(Meishi::Setsubi(Setsubi::Josuushi)) => 1,
+            //POS::Settoushi(Settoushi::SuuSetsuzoku) => 2,
+            //POS::Meishi(Meishi::FukushiKanou) => 1,
+            POS::Meishi(Meishi::FutsuMeishi(FutsuMeishi::FukushiKanou)) => 1,
+            //POS::Meishi(Meishi::Setsubi(Setsubi::Josuushi)) => 1,
+            POS::Setsubizi(Setsubizi::Meishiteki(Meishiteki::Josuushi)) => 1,
             _ => 0,
         };
         let (p2_is_kazu, p2_is_bangou) = {
@@ -64,8 +66,11 @@ fn score_end(njd: &NJD, end: usize) -> i8 {
             (node.get_pos(), node.get_string())
         };
         score += match pos {
-            POS::Meishi(Meishi::FukushiKanou) => 2,
-            POS::Meishi(Meishi::Setsubi(Setsubi::Josuushi)) => 2,
+            //POS::Meishi(Meishi::FukushiKanou) => 2,
+            POS::Meishi(Meishi::FutsuMeishi(FutsuMeishi::FukushiKanou)) => 2,
+            POS::Setsubizi(Setsubizi::Meishiteki(Meishiteki::FukushiKanou)) => 2,
+            //POS::Meishi(Meishi::Setsubi(Setsubi::Josuushi)) => 2,
+            POS::Setsubizi(Setsubizi::Meishiteki(Meishiteki::Josuushi)) => 2,
             _ => 0,
         };
         score += match string {

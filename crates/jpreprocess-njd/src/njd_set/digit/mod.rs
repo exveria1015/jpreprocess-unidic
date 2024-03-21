@@ -106,8 +106,10 @@ pub fn njd_set_digit(njd: &mut NJD) {
                 continue;
             }
             match node.get_pos() {
-                POS::Meishi(Meishi::FukushiKanou) => (),
-                POS::Meishi(Meishi::Setsubi(Setsubi::Josuushi)) => (),
+                //POS::Meishi(Meishi::FukushiKanou) => (),
+                POS::Meishi(Meishi::FutsuMeishi(FutsuMeishi::FukushiKanou)) => (),
+                //POS::Meishi(Meishi::Setsubi(Setsubi::Josuushi)) => (),
+                POS::Setsubizi(Setsubizi::Meishiteki(Meishiteki::Josuushi)) => (),
                 _ => continue,
             }
             /* convert digit pron */
@@ -211,8 +213,10 @@ pub fn njd_set_digit(njd: &mut NJD) {
                 _ => (),
             };
             match next.get_pos() {
-                POS::Meishi(Meishi::FukushiKanou) => (),
-                POS::Meishi(Meishi::Setsubi(Setsubi::Josuushi)) => (),
+                //POS::Meishi(Meishi::FukushiKanou) => (),
+                POS::Meishi(Meishi::FutsuMeishi(FutsuMeishi::FukushiKanou)) => (),
+                //POS::Meishi(Meishi::Setsubi(Setsubi::Josuushi)) => (),
+                POS::Setsubizi(Setsubizi::Meishiteki(Meishiteki::Josuushi)) => (),
                 _ => continue,
             };
 

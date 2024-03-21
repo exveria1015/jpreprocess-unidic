@@ -7,34 +7,14 @@ use super::{POSKind, POSParseError};
 #[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
 /// 名詞
 pub enum Meishi {
-    /// サ変接続
-    SahenSetsuzoku,
-    /// ナイ形容詞語幹
-    NaiKeiyoushiGokan,
-    /// 一般
-    General,
-    /// 引用文字列
-    QuoteStr,
-    /// 形容動詞語幹
-    KeiyoudoushiGokan,
+    /// 普通名詞
+    FutsuMeishi(FutsuMeishi),
     /// 固有名詞
     KoyuMeishi(KoyuMeishi),
-    /// 数
-    Kazu,
-    /// 接続詞的
-    Setsuzokushiteki,
-    /// 接尾
-    Setsubi(Setsubi),
-    /// 代名詞
-    Daimeishi(Daimeishi),
-    /// 動詞非自立的
-    DoushiHijiritsuteki,
-    /// 特殊
-    Special,
-    /// 非自立
-    Hijiritsu(MeishiHijiritsu),
-    /// 副詞可能
-    FukushiKanou,
+    /// 数詞
+    Suushi,
+    /// 助動詞語幹
+    JodoushiGokan,
 
     /// \*
     None,
@@ -43,20 +23,22 @@ pub enum Meishi {
 impl Meishi {
     pub fn from_strs(g1: &str, g2: &str, g3: &str) -> Result<Self, POSParseError> {
         match g1 {
-            "サ変接続" => Ok(Self::SahenSetsuzoku),
-            "ナイ形容詞語幹" => Ok(Self::NaiKeiyoushiGokan),
-            "一般" => Ok(Self::General),
-            "引用文字列" => Ok(Self::QuoteStr),
-            "形容動詞語幹" => Ok(Self::KeiyoudoushiGokan),
+            "普通名詞" => FutsuMeishi::from_strs(g2).map(Self::FutsuMeishi),
+            // "サ変接続" => Ok(Self::SahenSetsuzoku),
+            // "ナイ形容詞語幹" => Ok(Self::NaiKeiyoushiGokan),
+            // "一般" => Ok(Self::General),
+            // "引用文字列" => Ok(Self::QuoteStr),
+            // "形容動詞語幹" => Ok(Self::KeiyoudoushiGokan),
             "固有名詞" => KoyuMeishi::from_strs(g2, g3).map(Self::KoyuMeishi),
-            "数" => Ok(Self::Kazu),
-            "接続詞的" => Ok(Self::Setsuzokushiteki),
-            "接尾" => Setsubi::from_str(g2).map(Self::Setsubi),
-            "代名詞" => Daimeishi::from_str(g2).map(Self::Daimeishi),
-            "動詞非自立的" => Ok(Self::DoushiHijiritsuteki),
-            "特殊" => Ok(Self::Special),
-            "非自立" => MeishiHijiritsu::from_str(g2).map(Self::Hijiritsu),
-            "副詞可能" => Ok(Self::FukushiKanou),
+            "数詞" => Ok(Self::Suushi),
+            "助動詞語幹" => Ok(Self::JodoushiGokan),
+            // "接続詞的" => Ok(Self::Setsuzokushiteki),
+            // "接尾" => Setsubi::from_str(g2).map(Self::Setsubi),
+            // "代名詞" => Daimeishi::from_str(g2).map(Self::Daimeishi),
+            // "動詞非自立的" => Ok(Self::DoushiHijiritsuteki),
+            // "特殊" => Ok(Self::Special),
+            // "非自立" => MeishiHijiritsu::from_str(g2).map(Self::Hijiritsu),
+            // "副詞可能" => Ok(Self::FukushiKanou),
             "*" => Ok(Self::None),
 
             _ => Err(POSParseError::new(1, g1.to_string(), POSKind::Meishi)),
@@ -66,26 +48,79 @@ impl Meishi {
 
 impl Display for Meishi {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(&match &self {
-            Self::SahenSetsuzoku => "サ変接続,*,*".to_string(),
-            Self::NaiKeiyoushiGokan => "ナイ形容詞語幹,*,*".to_string(),
-            Self::General => "一般,*,*".to_string(),
-            Self::QuoteStr => "引用文字列,*,*".to_string(),
-            Self::KeiyoudoushiGokan => "形容動詞語幹,*,*".to_string(),
+        let var_name = match &self {
+            Self::FutsuMeishi(futsumeishi) => format!("普通名詞,{}", futsumeishi),
+            // Self::SahenSetsuzoku => "サ変接続,*,*".to_string(),
+            // Self::NaiKeiyoushiGokan => "ナイ形容詞語幹,*,*".to_string(),
+            // Self::General => "一般,*,*".to_string(),
+            // Self::QuoteStr => "引用文字列,*,*".to_string(),
+            // Self::KeiyoudoushiGokan => "形容動詞語幹,*,*".to_string(),
             Self::KoyuMeishi(koyumeishi) => format!("固有名詞,{}", koyumeishi),
-            Self::Kazu => "数,*,*".to_string(),
-            Self::Setsuzokushiteki => "接続詞的,*,*".to_string(),
-            Self::Setsubi(setsubi) => format!("接尾,{}", setsubi),
-            Self::Daimeishi(daimeishi) => format!("代名詞,{}", daimeishi),
-            Self::DoushiHijiritsuteki => "動詞非自立的,*,*".to_string(),
-            Self::Special => "特殊,*,*".to_string(),
-            Self::Hijiritsu(meishi_hijiritsu) => format!("非自立,{}", meishi_hijiritsu),
-            Self::FukushiKanou => "副詞可能,*,*".to_string(),
+            Self::Suushi => "数詞,*,*".to_string(),
+            Self::JodoushiGokan => "助動詞語幹,*,*".to_string(),
+            // Self::Setsuzokushiteki => "接続詞的,*,*".to_string(),
+            // Self::Setsubi(setsubi) => format!("接尾,{}", setsubi),
+            // Self::Daimeishi(daimeishi) => format!("代名詞,{}", daimeishi),
+            // Self::DoushiHijiritsuteki => "動詞非自立的,*,*".to_string(),
+            // Self::Special => "特殊,*,*".to_string(),
+            // Self::Hijiritsu(meishi_hijiritsu) => format!("非自立,{}", meishi_hijiritsu),
+            // Self::FukushiKanou => "副詞可能,*,*".to_string(),
 
             Self::None => "*".to_string(),
+        };
+        f.write_str(&var_name)
+    }
+}
+
+
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
+/// 普通名詞
+pub enum FutsuMeishi {
+
+    /// サ変可能
+    SahenKanou,
+    /// サ変形状詞可能
+    SahenKeijoushiKanou,
+    /// 一般
+    General,
+    /// 副詞可能
+    FukushiKanou,
+    /// 助数詞可能
+    JosuushiKanou,
+    /// 形状詞可能
+    KeijoushiKanou,
+}
+
+impl FutsuMeishi {
+    pub fn from_strs(g2: &str) -> Result<Self, POSParseError> {
+        match g2 {
+            "サ変可能" => Ok(Self::SahenKanou),
+            "サ変形状詞可能" => Ok(Self::SahenKeijoushiKanou),
+            "一般" => Ok(Self::General),
+            "副詞可能" => Ok(Self::FukushiKanou),
+            "助数詞可能" => Ok(Self::JosuushiKanou),
+            "形状詞可能" => Ok(Self::KeijoushiKanou),
+
+            _ => Err(POSParseError::new(2, g2.to_string(), POSKind::FutsuMeishi)),
+        }
+    }
+}
+
+impl Display for FutsuMeishi {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match &self {
+            Self::SahenKanou => "サ変可能,*",
+            Self::SahenKeijoushiKanou => "サ変形状詞可能,*",
+            Self::General => "一般,*",
+            Self::FukushiKanou => "副詞可能,*",
+            Self::JosuushiKanou => "助数詞可能,*",
+            Self::KeijoushiKanou => "形状詞可能,*",
         })
     }
 }
+
+
+
 
 #[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
 /// 固有名詞
@@ -94,9 +129,7 @@ pub enum KoyuMeishi {
     General,
     /// 人名
     Person(Person),
-    /// 組織
-    Organization,
-    /// 地域
+    /// 地名
     Region(Region),
 }
 
@@ -105,8 +138,7 @@ impl KoyuMeishi {
         match g2 {
             "一般" => Ok(Self::General),
             "人名" => Person::from_str(g3).map(Self::Person),
-            "組織" => Ok(Self::Organization),
-            "地域" => Region::from_str(g3).map(Self::Region),
+            "地名" => Region::from_str(g3).map(Self::Region),
 
             _ => Err(POSParseError::new(2, g2.to_string(), POSKind::KoyuMeishi)),
         }
@@ -138,7 +170,7 @@ impl FromStr for Person {
 }
 
 #[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
-/// 地域
+/// 地名
 pub enum Region {
     /// 一般
     General,
@@ -165,9 +197,8 @@ impl Display for KoyuMeishi {
             Self::Person(Person::General) => "人名,一般",
             Self::Person(Person::Sei) => "人名,姓",
             Self::Person(Person::Mei) => "人名,名",
-            Self::Organization => "組織,*",
-            Self::Region(Region::General) => "地域,一般",
-            Self::Region(Region::Country) => "地域,国",
+            Self::Region(Region::General) => "地名,一般",
+            Self::Region(Region::Country) => "地名,国",
         })
     }
 }
@@ -187,7 +218,7 @@ pub enum Setsubi {
     JodoushiGokan,
     /// 人名
     Person,
-    /// 地域
+    /// 地名
     Region,
     /// 特殊
     Special,
@@ -205,7 +236,7 @@ impl FromStr for Setsubi {
             "助数詞" => Ok(Self::Josuushi),
             "助動詞語幹" => Ok(Self::JodoushiGokan),
             "人名" => Ok(Self::Person),
-            "地域" => Ok(Self::Region),
+            "地名" => Ok(Self::Region),
             "特殊" => Ok(Self::Special),
             "副詞可能" => Ok(Self::FukushiKanou),
 
@@ -226,7 +257,7 @@ impl Display for Setsubi {
                 Self::Josuushi => "助数詞",
                 Self::JodoushiGokan => "助動詞語幹",
                 Self::Person => "人名",
-                Self::Region => "地域",
+                Self::Region => "地名",
                 Self::Special => "特殊",
                 Self::FukushiKanou => "副詞可能",
             },

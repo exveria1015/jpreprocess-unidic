@@ -22,6 +22,10 @@ impl FromStr for Doushi {
             "自立" => Ok(Self::Jiritsu),
             "接尾" => Ok(Self::Setsubi),
             "非自立" => Ok(Self::Hijiritsu),
+            //Unidic 3.1.0
+            "一般"  => Ok(Self::Jiritsu),
+            "非自立可能" => Ok(Self::Hijiritsu),
+
             _ => Err(POSParseError::new(1, s.to_string(), POSKind::Doushi)),
         }
     }

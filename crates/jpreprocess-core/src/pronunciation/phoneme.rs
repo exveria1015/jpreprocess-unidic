@@ -166,9 +166,10 @@ pub(crate) fn mora_to_phoneme(mora: &Mora) -> (Option<Consonant>, Option<Vowel>)
         MoraEnum::Xi => (None, Some(Vowel::I)),
         MoraEnum::A => (None, Some(Vowel::A)),
         MoraEnum::Xa => (None, Some(Vowel::A)),
-
+        MoraEnum::Wva => (Some(Consonant::V), Some(Vowel::A)),
+        MoraEnum::Wvo => (Some(Consonant::V), Some(Vowel::O)),
         MoraEnum::Long => (Some(Consonant::Long), None),
-        MoraEnum::Touten | MoraEnum::Question => (None, None),
+        MoraEnum::MiddleDot | MoraEnum::Touten | MoraEnum::Question => (None, None),
     };
     (
         consonant,
@@ -224,7 +225,7 @@ pub enum Consonant {
     Cl,
 
     // Consonant removed from output
-    /// ー
+    /// ー, 〜
     Long,
 }
 

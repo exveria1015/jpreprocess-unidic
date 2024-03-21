@@ -616,6 +616,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "jpreprocess-unidic-convert_unidic"
+version = "0.8.0"
+dependencies = [
+ "anyhow",
+ "bincode",
+ "byteorder",
+ "csv",
+ "jpreprocess-core",
+ "lindera-core",
+ "lindera-ipadic-builder",
+ "lindera-tokenizer",
+ "once_cell",
+ "regex",
+ "serde",
+]
+
+[[package]]
 name = "jpreprocess-window"
 version = "0.8.0"
 
